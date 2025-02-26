@@ -34,4 +34,22 @@ class ShopController extends Controller
             ], 404);
         }
     }
+
+    function searchByCity($name)
+    {
+        $shops = Shop::where('city', 'like', '%' . $name . '%')
+            ->orderBy('name')
+            ->get();
+
+        if ($shops->isNotEmpty()) {
+            return response()->json([
+                'data' => $shops,
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Not found',
+                'data'    => $shops,
+            ], 404);
+        }
+    }
 }
