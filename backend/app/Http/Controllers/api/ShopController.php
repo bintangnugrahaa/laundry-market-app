@@ -16,4 +16,22 @@ class ShopController extends Controller
             'data' => $shops
         ], 200);
     }
+
+    function readRecommendationLimit()
+    {
+        $shops = Shop::orderBy('rate', 'desc')
+            ->limit(5)
+            ->get();
+
+        if ($shops->isNotEmpty()) {
+            return response()->json([
+                'data' => $shops,
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Not found',
+                'data'    => $shops,
+            ], 404);
+        }
+    }
 }
