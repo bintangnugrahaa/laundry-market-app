@@ -16,6 +16,8 @@ Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/laundry/user/{id}', [LaundryController::class, 'whereUserId']);
+
     Route::get('/promo/limit', [PromoController::class, 'readLimit']);
 
     Route::get('/shop/recommendation/limit', [ShopController::class, 'readRecommendationLimit']);
