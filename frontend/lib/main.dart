@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/config/app_colors.dart';
+import 'package:frontend/pages/auth/register_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -23,26 +24,21 @@ class MainApp extends StatelessWidget {
         textTheme: GoogleFonts.latoTextTheme(),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
-            backgroundColor: const WidgetStatePropertyAll(AppColors.primary),
-            shape: WidgetStatePropertyAll(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+              backgroundColor: const WidgetStatePropertyAll(AppColors.primary),
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-            ),
-            padding: const WidgetStatePropertyAll(
-              EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            ),
-            textStyle: const WidgetStatePropertyAll(
-              TextStyle(fontSize: 15),
-            )
-          ),
+              padding: const WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              ),
+              textStyle: const WidgetStatePropertyAll(
+                TextStyle(fontSize: 15),
+              )),
         ),
       ),
-      home: const Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+      home: RegisterPage(),
     );
   }
 }
