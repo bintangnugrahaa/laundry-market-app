@@ -1,7 +1,7 @@
 class AppConstants {
   static const appName = "Sariwangi Laundry";
 
-  static const _host = 'http://10.10.105.132:8000';
+  static const _host = 'http://192.168.1.2:8000';
 
   static const baseURL = '$_host/api';
 
