@@ -1,4 +1,4 @@
-class APIRequest {
+class AppRequest {
   static Map<String, String> header([String? bearerToken]) {
     if (bearerToken == null) {
       return {
