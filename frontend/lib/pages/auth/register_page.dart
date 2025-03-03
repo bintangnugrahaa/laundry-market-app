@@ -1,10 +1,14 @@
 import 'package:d_button/d_button.dart';
+import 'package:d_info/d_info.dart';
 import 'package:d_input/d_input.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/config/app_assets.dart';
 import 'package:frontend/config/app_colors.dart';
 import 'package:frontend/config/app_constants.dart';
+import 'package:frontend/config/app_response.dart';
+import 'package:frontend/config/failure.dart';
+import 'package:frontend/datasources/user_datasources.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -20,7 +24,53 @@ class _RegisterPageState extends State<RegisterPage> {
   final edtPassword = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  execute() {}
+  execute() {
+    bool validInput = formKey.currentState!.validate();
+    if (!validInput) return;
+
+    UserDatasources.register(
+      edtUsername.text,
+      edtEmail.text,
+      edtPassword.text,
+    ).then((value) {
+      String newStatus = '';
+      value.fold((failure) {
+        switch (failure.runtimeType) {
+          case ServerFailure _:
+            newStatus = 'Server Error';
+            DInfo.toastError(newStatus);
+            break;
+          case NotFoundFailure _:
+            newStatus = 'Error Not Found';
+            DInfo.toastError(newStatus);
+            break;
+          case ForbiddenFailure _:
+            newStatus = 'Yout don\'t have access';
+            DInfo.toastError(newStatus);
+            break;
+          case BadRequestFailure _:
+            newStatus = 'Bad Request';
+            DInfo.toastError(newStatus);
+            break;
+          case InvalidInputFailure _:
+            newStatus = 'Invalid Input';
+            AppResponse.invalidInput(context, failure.message ?? '{}');
+            break;
+          case UnauthorisedFailure _:
+            newStatus = 'Unauthorised';
+            DInfo.toastError(newStatus);
+            break;
+          default:
+            newStatus = 'Request Error';
+            DInfo.toastError(newStatus);
+            newStatus = failure.message ?? '-';
+            break;
+        }
+      }, (result) {
+        DInfo.toastSuccess('Register Success');
+      });
+    });
+  }
 
   @override
   void dispose() {
