@@ -233,7 +233,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               aspectRatio: 1,
                               child: DButtonFlat(
                                 onClick: () {
-                                  // Navigator.pop(context);
+                                  Navigator.pop(context);
                                 },
                                 padding: const EdgeInsets.all(0),
                                 radius: 10,
