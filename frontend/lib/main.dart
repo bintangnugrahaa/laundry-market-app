@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/config/app_colors.dart';
-import 'package:frontend/pages/auth/register_page.dart';
+import 'package:frontend/pages/auth/login_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -38,7 +38,7 @@ class MainApp extends StatelessWidget {
               )),
         ),
       ),
-      home: RegisterPage(),
+      home: LoginPage(),
     );
   }
 }
