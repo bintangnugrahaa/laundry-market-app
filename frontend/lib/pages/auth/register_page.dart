@@ -3,22 +3,25 @@ import 'package:d_info/d_info.dart';
 import 'package:d_input/d_input.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/config/app_assets.dart';
-import 'package:frontend/config/app_colors.dart';
-import 'package:frontend/config/app_constants.dart';
-import 'package:frontend/config/app_response.dart';
-import 'package:frontend/config/failure.dart';
-import 'package:frontend/datasources/user_datasources.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class RegisterPage extends StatefulWidget {
+import '../../config/app_assets.dart';
+import '../../config/app_colors.dart';
+import '../../config/app_constants.dart';
+import '../../config/app_response.dart';
+import '../../config/failure.dart';
+import '../../datasources/user_datasource.dart';
+import '../../providers/register_provider.dart';
+
+class RegisterPage extends ConsumerStatefulWidget {
   const RegisterPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  ConsumerState<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends ConsumerState<RegisterPage> {
   final edtUsername = TextEditingController();
   final edtEmail = TextEditingController();
   final edtPassword = TextEditingController();
@@ -28,56 +31,56 @@ class _RegisterPageState extends State<RegisterPage> {
     bool validInput = formKey.currentState!.validate();
     if (!validInput) return;
 
-    UserDatasources.register(
+    setRegisterStatus(ref, 'Loading');
+
+    UserDatasource.register(
       edtUsername.text,
       edtEmail.text,
       edtPassword.text,
     ).then((value) {
       String newStatus = '';
-      value.fold((failure) {
-        switch (failure.runtimeType) {
-          case ServerFailure _:
-            newStatus = 'Server Error';
-            DInfo.toastError(newStatus);
-            break;
-          case NotFoundFailure _:
-            newStatus = 'Error Not Found';
-            DInfo.toastError(newStatus);
-            break;
-          case ForbiddenFailure _:
-            newStatus = 'Yout don\'t have access';
-            DInfo.toastError(newStatus);
-            break;
-          case BadRequestFailure _:
-            newStatus = 'Bad Request';
-            DInfo.toastError(newStatus);
-            break;
-          case InvalidInputFailure _:
-            newStatus = 'Invalid Input';
-            AppResponse.invalidInput(context, failure.message ?? '{}');
-            break;
-          case UnauthorisedFailure _:
-            newStatus = 'Unauthorised';
-            DInfo.toastError(newStatus);
-            break;
-          default:
-            newStatus = 'Request Error';
-            DInfo.toastError(newStatus);
-            newStatus = failure.message ?? '-';
-            break;
-        }
-      }, (result) {
-        DInfo.toastSuccess('Register Success');
-      });
-    });
-  }
 
-  @override
-  void dispose() {
-    edtUsername.dispose();
-    edtEmail.dispose();
-    edtPassword.dispose();
-    super.dispose();
+      value.fold(
+        (failure) {
+          switch (failure.runtimeType) {
+            case ServerFailure:
+              newStatus = 'Server Error';
+              DInfo.toastError(newStatus);
+              break;
+            case NotFoundFailure:
+              newStatus = 'Error Not Found';
+              DInfo.toastError(newStatus);
+              break;
+            case ForbiddenFailure:
+              newStatus = 'You don\'t have access';
+              DInfo.toastError(newStatus);
+              break;
+            case BadRequestFailure:
+              newStatus = 'Bad request';
+              DInfo.toastError(newStatus);
+              break;
+            case InvalidInputFailure:
+              newStatus = 'Invalid Input';
+              AppResponse.invalidInput(context, failure.message ?? '{}');
+              break;
+            case UnauthorisedFailure:
+              newStatus = 'Unauthorised';
+              DInfo.toastError(newStatus);
+              break;
+            default:
+              newStatus = 'Request Error';
+              DInfo.toastError(newStatus);
+              newStatus = failure.message ?? '-';
+              break;
+          }
+          setRegisterStatus(ref, newStatus);
+        },
+        (result) {
+          DInfo.toastSuccess('Register Success');
+          setRegisterStatus(ref, 'Success');
+        },
+      );
+    });
   }
 
   @override
@@ -112,23 +115,22 @@ class _RegisterPageState extends State<RegisterPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 50),
+                  padding: const EdgeInsets.only(top: 30),
                   child: Column(
                     children: [
                       Text(
                         AppConstants.appName,
-                        style: GoogleFonts.lato(
+                        style: GoogleFonts.poppins(
                           fontSize: 40,
                           color: Colors.green[900],
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(height: 5),
                       Container(
                         height: 5,
                         width: 40,
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withAlpha(128),
+                          color: AppColors.primary.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
@@ -153,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                               ),
                             ),
-                            DView.width(10),
+                            DView.spaceWidth(10),
                             Expanded(
                               child: DInput(
                                 controller: edtUsername,
@@ -167,7 +169,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ],
                         ),
                       ),
-                      DView.height(16),
+                      DView.spaceHeight(16),
                       IntrinsicHeight(
                         child: Row(
                           children: [
@@ -182,7 +184,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                               ),
                             ),
-                            DView.width(10),
+                            DView.spaceWidth(10),
                             Expanded(
                               child: DInput(
                                 controller: edtEmail,
@@ -196,7 +198,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ],
                         ),
                       ),
-                      DView.height(16),
+                      DView.spaceHeight(16),
                       IntrinsicHeight(
                         child: Row(
                           children: [
@@ -211,7 +213,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                               ),
                             ),
-                            DView.width(10),
+                            DView.spaceWidth(10),
                             Expanded(
                               child: DInputPassword(
                                 controller: edtPassword,
@@ -225,7 +227,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ],
                         ),
                       ),
-                      DView.height(),
+                      DView.spaceHeight(),
                       IntrinsicHeight(
                         child: Row(
                           children: [
@@ -247,22 +249,29 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                               ),
                             ),
-                            DView.width(10),
+                            DView.spaceWidth(10),
                             Expanded(
-                              child: ElevatedButton(
-                                onPressed: () => execute(),
-                                style: const ButtonStyle(
-                                  alignment: Alignment.centerLeft,
-                                ),
-                                child: const Text(
-                                  'Register',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            )
+                              child: Consumer(builder: (_, wiRef, __) {
+                                String status =
+                                    wiRef.watch(registerStatusProvider);
+                                if (status == 'Loading') {
+                                  return DView.loadingCircle();
+                                }
+                                return ElevatedButton(
+                                  onPressed: () => execute(),
+                                  style: const ButtonStyle(
+                                    alignment: Alignment.centerLeft,
+                                  ),
+                                  child: const Text(
+                                    'Register',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                );
+                              }),
+                            ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
