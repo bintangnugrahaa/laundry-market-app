@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/config/app_colors.dart';
+import 'package:frontend/config/app_session.dart';
 import 'package:frontend/pages/auth/login_page.dart';
+import 'package:frontend/pages/dashboard_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(
+    const ProviderScope(
+      child: MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -38,7 +45,15 @@ class MainApp extends StatelessWidget {
               )),
         ),
       ),
-      home: LoginPage(),
+      home: FutureBuilder(
+        future: AppSession.getUser(),
+        builder: (context, snapshot) {
+          if (snapshot.data == null) {
+            return const LoginPage();
+          }
+          return const DashboardPage();
+        },
+      ),
     );
   }
 }
