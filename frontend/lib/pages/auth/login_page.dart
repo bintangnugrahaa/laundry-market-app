@@ -1,79 +1,91 @@
 import 'package:d_button/d_button.dart';
+import 'package:d_info/d_info.dart';
 import 'package:d_input/d_input.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/config/app_assets.dart';
-import 'package:frontend/config/app_colors.dart';
-import 'package:frontend/config/app_constants.dart';
-import 'package:frontend/config/nav.dart';
-import 'package:frontend/pages/auth/register_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginPage extends StatefulWidget {
+import '../../config/app_assets.dart';
+import '../../config/app_colors.dart';
+import '../../config/app_constants.dart';
+import '../../config/app_response.dart';
+import '../../config/app_session.dart';
+import '../../config/failure.dart';
+import '../../config/nav.dart';
+import '../../datasources/user_datasource.dart';
+import '../../providers/login_provider.dart';
+import '../dashboard_page.dart';
+import 'register_page.dart';
+
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   final edtEmail = TextEditingController();
   final edtPassword = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   execute() {
-    // bool validInput = formKey.currentState!.validate();
-    // if (!validInput) return;
+    bool validInput = formKey.currentState!.validate();
+    if (!validInput) return;
 
-    // UserDatasources.register(
-    //   edtUsername.text,
-    //   edtEmail.text,
-    //   edtPassword.text,
-    // ).then((value) {
-    //   String newStatus = '';
-    //   value.fold((failure) {
-    //     switch (failure.runtimeType) {
-    //       case ServerFailure _:
-    //         newStatus = 'Server Error';
-    //         DInfo.toastError(newStatus);
-    //         break;
-    //       case NotFoundFailure _:
-    //         newStatus = 'Error Not Found';
-    //         DInfo.toastError(newStatus);
-    //         break;
-    //       case ForbiddenFailure _:
-    //         newStatus = 'Yout don\'t have access';
-    //         DInfo.toastError(newStatus);
-    //         break;
-    //       case BadRequestFailure _:
-    //         newStatus = 'Bad Request';
-    //         DInfo.toastError(newStatus);
-    //         break;
-    //       case InvalidInputFailure _:
-    //         newStatus = 'Invalid Input';
-    //         AppResponse.invalidInput(context, failure.message ?? '{}');
-    //         break;
-    //       case UnauthorisedFailure _:
-    //         newStatus = 'Unauthorised';
-    //         DInfo.toastError(newStatus);
-    //         break;
-    //       default:
-    //         newStatus = 'Request Error';
-    //         DInfo.toastError(newStatus);
-    //         newStatus = failure.message ?? '-';
-    //         break;
-    //     }
-    //   }, (result) {
-    //     DInfo.toastSuccess('Register Success');
-    //   });
-    // });
-  }
+    setLoginStatus(ref, 'Loading');
 
-  @override
-  void dispose() {
-    edtEmail.dispose();
-    edtPassword.dispose();
-    super.dispose();
+    UserDatasource.login(
+      edtEmail.text,
+      edtPassword.text,
+    ).then((value) {
+      String newStatus = '';
+
+      value.fold(
+        (failure) {
+          switch (failure.runtimeType) {
+            case ServerFailure:
+              newStatus = 'Server Error';
+              DInfo.toastError(newStatus);
+              break;
+            case NotFoundFailure:
+              newStatus = 'Error Not Found';
+              DInfo.toastError(newStatus);
+              break;
+            case ForbiddenFailure:
+              newStatus = 'You don\'t have access';
+              DInfo.toastError(newStatus);
+              break;
+            case BadRequestFailure:
+              newStatus = 'Bad request';
+              DInfo.toastError(newStatus);
+              break;
+            case InvalidInputFailure:
+              newStatus = 'Invalid Input';
+              AppResponse.invalidInput(context, failure.message ?? '{}');
+              break;
+            case UnauthorisedFailure:
+              newStatus = 'Login Failed';
+              DInfo.toastError(newStatus);
+              break;
+            default:
+              newStatus = 'Request Error';
+              DInfo.toastError(newStatus);
+              newStatus = failure.message ?? '-';
+              break;
+          }
+          setLoginStatus(ref, newStatus);
+        },
+        (result) {
+          AppSession.setUser(result['data']);
+          AppSession.setBearerToken(result['token']);
+          DInfo.toastSuccess('Login Success');
+          setLoginStatus(ref, 'Success');
+          Nav.replace(context, const DashboardPage());
+        },
+      );
+    });
   }
 
   @override
@@ -108,23 +120,22 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 50),
+                  padding: const EdgeInsets.only(top: 30),
                   child: Column(
                     children: [
                       Text(
                         AppConstants.appName,
-                        style: GoogleFonts.lato(
+                        style: GoogleFonts.poppins(
                           fontSize: 40,
                           color: Colors.green[900],
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(height: 5),
                       Container(
                         height: 5,
                         width: 40,
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withAlpha(128),
+                          color: AppColors.primary.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
@@ -149,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            DView.width(10),
+                            DView.spaceWidth(10),
                             Expanded(
                               child: DInput(
                                 controller: edtEmail,
@@ -163,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                       ),
-                      DView.height(16),
+                      DView.spaceHeight(16),
                       IntrinsicHeight(
                         child: Row(
                           children: [
@@ -178,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            DView.width(10),
+                            DView.spaceWidth(10),
                             Expanded(
                               child: DInputPassword(
                                 controller: edtPassword,
@@ -192,7 +203,7 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                       ),
-                      DView.height(),
+                      DView.spaceHeight(),
                       IntrinsicHeight(
                         child: Row(
                           children: [
@@ -214,22 +225,29 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            DView.width(10),
+                            DView.spaceWidth(10),
                             Expanded(
-                              child: ElevatedButton(
-                                onPressed: () => execute(),
-                                style: const ButtonStyle(
-                                  alignment: Alignment.centerLeft,
-                                ),
-                                child: const Text(
-                                  'Login',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            )
+                              child: Consumer(builder: (_, wiRef, __) {
+                                String status =
+                                    wiRef.watch(loginStatusProvider);
+                                if (status == 'Loading') {
+                                  return DView.loadingCircle();
+                                }
+                                return ElevatedButton(
+                                  onPressed: () => execute(),
+                                  style: const ButtonStyle(
+                                    alignment: Alignment.centerLeft,
+                                  ),
+                                  child: const Text(
+                                    'Login',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                );
+                              }),
+                            ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
