@@ -1,18 +1,21 @@
 import 'dart:convert';
 
+import 'package:d_method/d_method.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:frontend/config/failure.dart';
+import 'package:http/http.dart';
+
+import 'failure.dart';
 
 class AppResponse {
-  static Map data(http.Response response) {
+  static Map data(Response response) {
+    DMethod.printResponse(response);
 
     switch (response.statusCode) {
-      case 200:
-      case 201:
+      case 200: // read
+      case 201: // create, update
         var responseBody = jsonDecode(response.body);
         return responseBody;
-      case 204:
+      case 204: // delete
         return {'success': true};
       case 400:
         throw BadRequestFailure(response.body);
@@ -31,7 +34,7 @@ class AppResponse {
     }
   }
 
-  static void invalidInput(BuildContext context, String messageBody) {
+  static invalidInput(BuildContext context, String messageBody) {
     Map errors = jsonDecode(messageBody)['errors'];
     showDialog(
       context: context,
@@ -44,7 +47,6 @@ class AppResponse {
               return ListTile(
                 title: Text(e.key),
                 subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: (e.value as List).map((itemError) {
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +67,7 @@ class AppResponse {
                 },
                 child: const Text('Close'),
               ),
-            )
+            ),
           ],
         );
       },
