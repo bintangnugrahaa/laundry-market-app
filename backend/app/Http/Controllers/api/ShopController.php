@@ -13,7 +13,7 @@ class ShopController extends Controller
         $shops = Shop::all();
 
         return response()->json([
-            'data' => $shops
+            'data' => $shops,
         ], 200);
     }
 
@@ -23,14 +23,14 @@ class ShopController extends Controller
             ->limit(5)
             ->get();
 
-        if ($shops->isNotEmpty()) {
+        if (count($shops) > 0) {
             return response()->json([
                 'data' => $shops,
             ], 200);
         } else {
             return response()->json([
-                'message' => 'Not found',
-                'data'    => $shops,
+                'message' => 'not found',
+                'data' => $shops,
             ], 404);
         }
     }
@@ -41,14 +41,14 @@ class ShopController extends Controller
             ->orderBy('name')
             ->get();
 
-        if ($shops->isNotEmpty()) {
+        if (count($shops) > 0) {
             return response()->json([
                 'data' => $shops,
             ], 200);
         } else {
             return response()->json([
-                'message' => 'Not found',
-                'data'    => $shops,
+                'message' => 'not found',
+                'data' => $shops,
             ], 404);
         }
     }

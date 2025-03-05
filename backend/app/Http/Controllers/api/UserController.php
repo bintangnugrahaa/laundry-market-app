@@ -15,26 +15,26 @@ class UserController extends Controller
         $users = User::all();
 
         return response()->json([
-            'data' => $users
+            'data' => $users,
         ], 200);
     }
 
     function register(Request $request)
     {
-        $request->validate([
+        $this->validate($request, [
             'username' => 'required|min:4|unique:users',
-            'email'    => 'required|email|unique:users',
+            'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
         ]);
 
         $user = User::create([
             'username' => $request->username,
-            'email'    => $request->email,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
         return response()->json([
-            'data' => $user
+            'data' => $user,
         ], 201);
     }
 
@@ -47,10 +47,11 @@ class UserController extends Controller
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'data'  => $user,
+            'data' => $user,
             'token' => $token,
         ], 200);
     }

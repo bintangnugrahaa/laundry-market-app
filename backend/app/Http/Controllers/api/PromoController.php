@@ -10,10 +10,10 @@ class PromoController extends Controller
 {
     function readAll()
     {
-        $promos = Promo::with(['shop'])->get();
+        $promos = Promo::with('shop')->get();
 
         return response()->json([
-            'data' => $promos
+            'data' => $promos,
         ], 200);
     }
 
@@ -24,14 +24,14 @@ class PromoController extends Controller
             ->with('shop')
             ->get();
 
-        if ($promos->isNotEmpty()) {
+        if (count($promos) > 0) {
             return response()->json([
                 'data' => $promos,
             ], 200);
         } else {
             return response()->json([
-                'message' => 'Not found',
-                'data'    => $promos,
+                'message' => 'not found',
+                'data' => $promos,
             ], 404);
         }
     }
