@@ -1,7 +1,7 @@
 class AppConstants {
   static const appName = "Star Laundry";
 
-  static const _host = 'http://192.168.1.2:8000';
+  static const _host = 'http://192.168.1.4:8000';
 
   static const baseURL = '$_host/api';
 
