@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/config/app_colors.dart';
-import 'package:frontend/config/app_session.dart';
-import 'package:frontend/pages/auth/login_page.dart';
-import 'package:frontend/pages/dashboard_page.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'config/app_colors.dart';
+import 'config/app_session.dart';
+import 'pages/auth/login_page.dart';
+import 'pages/dashboard_page.dart';
 
 void main() {
   runApp(
@@ -14,14 +15,14 @@ void main() {
   );
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
+      theme: ThemeData.light().copyWith(
         primaryColor: AppColors.primary,
         scaffoldBackgroundColor: Colors.white,
         colorScheme: ColorScheme.light(
@@ -31,18 +32,19 @@ class MainApp extends StatelessWidget {
         textTheme: GoogleFonts.latoTextTheme(),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
-              backgroundColor: const WidgetStatePropertyAll(AppColors.primary),
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+            backgroundColor: const MaterialStatePropertyAll(AppColors.primary),
+            shape: MaterialStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
-              padding: const WidgetStatePropertyAll(
-                EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              ),
-              textStyle: const WidgetStatePropertyAll(
-                TextStyle(fontSize: 15),
-              )),
+            ),
+            padding: const MaterialStatePropertyAll(
+              EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            ),
+            textStyle: const MaterialStatePropertyAll(
+              TextStyle(fontSize: 15),
+            ),
+          ),
         ),
       ),
       home: FutureBuilder(
