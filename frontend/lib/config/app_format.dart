@@ -21,23 +21,32 @@ class AppFormat {
     return DateFormat('yyyy-MM-dd').format(dateTime);
   }
 
-  static String shortDara(dynamic source) {
-    if (source is String) {
-      return DateFormat('EEEE, d MMM yy').format(DateTime.parse(source));
-    } else if (source is DateTime) {
-      return DateFormat('EEEE, d MMM yy').format(source);
-    } else {
-      return 'Not Valid';
-    }
+  /// Format: Monday, 2 Jan 23
+  static String shortDate(dynamic source) {
+    DateTime? date = _parseDate(source);
+    return date != null
+        ? DateFormat('EEEE, d MMM yy').format(date)
+        : 'Not valid';
   }
 
+  /// Format: Monday, 2 January 2023
   static String fullDate(dynamic source) {
+    DateTime? date = _parseDate(source);
+    return date != null
+        ? DateFormat('EEEE, d MMMM yyyy').format(date)
+        : 'Not valid';
+  }
+
+  /// Helper untuk parsing tanggal dengan error handling
+  static DateTime? _parseDate(dynamic source) {
+    if (source is DateTime) return source;
     if (source is String) {
-      return DateFormat('EEEE, d MMMM yyyy').format(DateTime.parse(source));
-    } else if (source is DateTime) {
-      return DateFormat('EEEE, d MMMM yyyy').format(source);
-    } else {
-      return 'Not Valid';
+      try {
+        return DateTime.parse(source);
+      } catch (e) {
+        return null;
+      }
     }
+    return null;
   }
 }
