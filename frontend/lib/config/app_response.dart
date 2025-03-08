@@ -51,21 +51,27 @@ class AppResponse {
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('- '),
+                        const Text(
+                          '- ',
+                          style: TextStyle(color: Colors.white),
+                        ),
                         Expanded(child: Text(itemError)),
                       ],
                     );
                   }).toList(),
                 ),
               );
-            }),
+            }).toList(),
             Padding(
               padding: const EdgeInsets.all(16),
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text('Close'),
+                child: const Text(
+                  'Close',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],
