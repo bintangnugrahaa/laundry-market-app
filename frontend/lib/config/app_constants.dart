@@ -1,13 +1,18 @@
-import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
 
+import '../pages/dashboard_views/account_view.dart';
+import '../pages/dashboard_views/home_view.dart';
+import '../pages/dashboard_views/my_laundry_view.dart';
+
 class AppConstants {
-  static const appName = "Star Laundry";
+  static const appName = 'Di Laundry';
 
-  static const _host = 'http://192.168.1.4:8000';
+  static const _host = 'http://10.10.105.20:8000';
 
+  /// ``` baseURL = 'http://192.168.43.186:8000/api' ```
   static const baseURL = '$_host/api';
 
+  /// ``` baseURL = 'http://192.168.43.186:8000/storage' ```
   static const baseImageURL = '$_host/storage';
 
   static const laundryStatusCategory = [
@@ -19,24 +24,32 @@ class AppConstants {
     'Dried',
     'Ironed',
     'Done',
-    'Delivery',
+    'Delivery'
   ];
 
   static List<Map> navMenuDashboard = [
     {
-      'view': DView.empty('Home'),
+      'view': const HomeView(),
       'icon': Icons.home_filled,
       'label': 'Home',
     },
     {
-      'view': DView.empty('My Laundry'),
+      'view': const MyLaundryView(),
       'icon': Icons.local_laundry_service,
       'label': 'My Laundry',
     },
     {
-      'view': DView.empty('Account'),
+      'view': const AccountView(),
       'icon': Icons.account_circle,
       'label': 'Account',
     },
+  ];
+
+  static const homeCategories = [
+    'All',
+    'Regular',
+    'Express',
+    'Economical',
+    'Exlusive',
   ];
 }
