@@ -7,7 +7,7 @@ class AppRequest {
     } else {
       return {
         "Accept": "application/json",
-        "Authorization": "Bearer $bearerToken",
+        'Authorization': 'Bearer $bearerToken',
       };
     }
   }
