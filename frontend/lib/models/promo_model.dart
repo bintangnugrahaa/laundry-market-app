@@ -1,16 +1,6 @@
-import 'package:frontend/models/shop_model.dart';
+import 'shop_model.dart';
 
 class PromoModel {
-  int id;
-  String image;
-  int shopId;
-  double oldPrice;
-  double newPrice;
-  String description;
-  DateTime createdAt;
-  DateTime updatedAt;
-  ShopModel shop;
-
   PromoModel({
     required this.id,
     required this.image,
@@ -22,6 +12,16 @@ class PromoModel {
     required this.updatedAt,
     required this.shop,
   });
+
+  int id;
+  String image;
+  int shopId;
+  double oldPrice;
+  double newPrice;
+  String description;
+  DateTime createdAt;
+  DateTime updatedAt;
+  ShopModel shop;
 
   factory PromoModel.fromJson(Map<String, dynamic> json) => PromoModel(
         id: json["id"],
