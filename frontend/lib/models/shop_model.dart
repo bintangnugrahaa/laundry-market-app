@@ -1,18 +1,4 @@
 class ShopModel {
-  int id;
-  String image;
-  String name;
-  String location;
-  String city;
-  bool delivery;
-  bool pickup;
-  String whatsapp;
-  String description;
-  double price;
-  double rate;
-  DateTime createdAt;
-  DateTime updatedAt;
-
   ShopModel({
     required this.id,
     required this.image,
@@ -28,6 +14,20 @@ class ShopModel {
     required this.createdAt,
     required this.updatedAt,
   });
+
+  int id;
+  String image;
+  String name;
+  String location;
+  String city;
+  bool delivery;
+  bool pickup;
+  String whatsapp;
+  String description;
+  double price;
+  double rate;
+  DateTime createdAt;
+  DateTime updatedAt;
 
   factory ShopModel.fromJson(Map<String, dynamic> json) => ShopModel(
         id: json["id"],
