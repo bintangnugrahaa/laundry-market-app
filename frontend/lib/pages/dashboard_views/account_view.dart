@@ -1,6 +1,9 @@
 import 'package:d_info/d_info.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/customer_support_page.dart';
+import 'package:frontend/pages/faq_page.dart';
+import 'package:frontend/pages/terms_privacy_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../config/app_assets.dart';
@@ -43,25 +46,6 @@ class AccountView extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-
-  void _showSupportDialog(BuildContext context) {
-    _showDialog(
-      context,
-      'Customer Support',
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildInfoRow(Icons.phone, '+62 851-5534-4998'),
-          const SizedBox(height: 10),
-          _buildInfoRow(
-            Icons.location_on,
-            'Jl. Tulip No. 16B, Rawa Panjang, Bojong Gede, Bogor, Jawa Barat',
-          ),
-        ],
-      ),
     );
   }
 
@@ -113,8 +97,36 @@ class AccountView extends StatelessWidget {
             _buildHeader(),
             _buildUserInfo(user),
             _buildSectionHeader('Settings'),
-            _buildListTile(Icons.support_agent, 'Support',
-                () => _showSupportDialog(context)),
+            _buildListTile(
+              Icons.policy,
+              'Customer Support',
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CustomerSupportPage(),
+                ),
+              ),
+            ),
+            _buildListTile(
+              Icons.question_mark,
+              'FAQ',
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FAQPage(),
+                ),
+              ),
+            ),
+            _buildListTile(
+              Icons.policy,
+              'Privacy & Terms',
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const TermsPrivacyPage(),
+                ),
+              ),
+            ),
             _buildListTile(
                 Icons.info, 'About', () => _showAboutDialog(context)),
             _buildLogoutButton(context),
