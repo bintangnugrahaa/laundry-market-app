@@ -1,9 +1,10 @@
 import 'package:dartz/dartz.dart';
-import 'package:frontend/config/app_request.dart';
 import 'package:http/http.dart' as http;
-import 'package:frontend/config/app_constants.dart';
-import 'package:frontend/config/app_response.dart';
-import 'package:frontend/config/failure.dart';
+
+import '../config/app_constants.dart';
+import '../config/app_request.dart';
+import '../config/app_response.dart';
+import '../config/failure.dart';
 
 class UserDatasource {
   static Future<Either<Failure, Map>> login(
@@ -11,7 +12,6 @@ class UserDatasource {
     String password,
   ) async {
     Uri url = Uri.parse('${AppConstants.baseURL}/login');
-
     try {
       final response = await http.post(
         url,
@@ -37,7 +37,6 @@ class UserDatasource {
     String password,
   ) async {
     Uri url = Uri.parse('${AppConstants.baseURL}/register');
-
     try {
       final response = await http.post(
         url,
