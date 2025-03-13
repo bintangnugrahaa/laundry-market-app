@@ -33,7 +33,7 @@ class AppFormat {
   static String fullDate(dynamic source) {
     DateTime? date = _parseDate(source);
     return date != null
-        ? DateFormat('EEEE, d MMMM yyyy').format(date)
+        ? DateFormat('d MMMM yyyy').format(date)
         : 'Not valid';
   }
 
